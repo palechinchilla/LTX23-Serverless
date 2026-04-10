@@ -115,29 +115,15 @@ RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git /comfyui/custom_nodes
     && cd /comfyui/custom_nodes/ComfyUI-KJNodes \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install ComfyUI-WanVideoWrapper
-RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git /comfyui/custom_nodes/ComfyUI-WanVideoWrapper \
-    && cd /comfyui/custom_nodes/ComfyUI-WanVideoWrapper \
+# Install custom nodes - rgthree-comfy
+RUN git clone https://github.com/rgthree/rgthree-comfy.git /comfyui/custom_nodes/rgthree-comfy \
+    && cd /comfyui/custom_nodes/rgthree-comfy \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install ComfyUI-Custom-Scripts
-RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git /comfyui/custom_nodes/ComfyUI-Custom-Scripts \
-    && cd /comfyui/custom_nodes/ComfyUI-Custom-Scripts \
+# Install custom nodes - ComfyUI-VideoHelperSuite
+RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git /comfyui/custom_nodes/ComfyUI-VideoHelperSuite \
+    && cd /comfyui/custom_nodes/ComfyUI-VideoHelperSuite \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
-
-# Install ComfyUI-Easy-Use
-RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git /comfyui/custom_nodes/ComfyUI-Easy-Use \
-    && cd /comfyui/custom_nodes/ComfyUI-Easy-Use \
-    && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
-
-# Install ComfyUI-Frame-Interpolation
-RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /comfyui/custom_nodes/ComfyUI-Frame-Interpolation \
-    && cd /comfyui/custom_nodes/ComfyUI-Frame-Interpolation \
-    && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi \
-    && mkdir -p /comfyui/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife \
-    && wget -O /comfyui/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth \
-        https://huggingface.co/wavespeed/misc/resolve/main/rife/rife47.pth
-
 
 
 # Install Python runtime dependencies for the handler
