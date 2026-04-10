@@ -143,12 +143,9 @@ RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /com
 
 
 
-# Install alembic (required by ComfyUI for its local SQLite database)
-RUN uv pip install --no-cache-dir alembic
-
-# Install ComfyUI as a proper Python package so internal modules like
-# comfy_aimdo are importable when main.py runs (added in recent ComfyUI versions)
-RUN uv pip install --no-cache-dir -e /comfyui
+# Re-run ComfyUI's own requirements to pick up alembic and any other deps
+# added in recent versions (comfy_aimdo etc. are exposed via PYTHONPATH above)
+RUN uv pip install --no-cache-dir -r /comfyui/requirements.txt
 
 # Install Python runtime dependencies for the handler
 RUN uv pip install runpod requests websocket-client
