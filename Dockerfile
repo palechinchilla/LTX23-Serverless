@@ -25,6 +25,9 @@ ENV CMAKE_BUILD_PARALLEL_LEVEL=16
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 
+# Ensure ComfyUI's own subpackages (comfy_aimdo, etc.) are importable
+ENV PYTHONPATH="/comfyui:${PYTHONPATH}"
+
 
 # Install Python, git and other necessary tools
 RUN apt-get update && apt-get install -y \
@@ -115,16 +118,37 @@ RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git /comfyui/custom_nodes
     && cd /comfyui/custom_nodes/ComfyUI-KJNodes \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install custom nodes - rgthree-comfy
-RUN git clone https://github.com/rgthree/rgthree-comfy.git /comfyui/custom_nodes/rgthree-comfy \
-    && cd /comfyui/custom_nodes/rgthree-comfy \
+# Install ComfyUI-WanVideoWrapper
+RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git /comfyui/custom_nodes/ComfyUI-WanVideoWrapper \
+    && cd /comfyui/custom_nodes/ComfyUI-WanVideoWrapper \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install custom nodes - ComfyUI-VideoHelperSuite
-RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git /comfyui/custom_nodes/ComfyUI-VideoHelperSuite \
-    && cd /comfyui/custom_nodes/ComfyUI-VideoHelperSuite \
+# Install ComfyUI-Custom-Scripts
+RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git /comfyui/custom_nodes/ComfyUI-Custom-Scripts \
+    && cd /comfyui/custom_nodes/ComfyUI-Custom-Scripts \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
+# Install ComfyUI-Easy-Use
+RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git /comfyui/custom_nodes/ComfyUI-Easy-Use \
+    && cd /comfyui/custom_nodes/ComfyUI-Easy-Use \
+    && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
+
+# Install ComfyUI-Frame-Interpolation
+RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /comfyui/custom_nodes/ComfyUI-Frame-Interpolation \
+    && cd /comfyui/custom_nodes/ComfyUI-Frame-Interpolation \
+    && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi \
+    && mkdir -p /comfyui/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife \
+    && wget -O /comfyui/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth \
+        https://huggingface.co/wavespeed/misc/resolve/main/rife/rife47.pth
+
+
+
+# Install alembic (required by ComfyUI for its local SQLite database)
+RUN uv pip install --no-cache-dir alembic
+
+# Install ComfyUI as a proper Python package so internal modules like
+# comfy_aimdo are importable when main.py runs (added in recent ComfyUI versions)
+RUN uv pip install --no-cache-dir -e /comfyui
 
 # Install Python runtime dependencies for the handler
 RUN uv pip install runpod requests websocket-client
