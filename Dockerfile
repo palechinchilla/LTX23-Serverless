@@ -118,14 +118,14 @@ RUN git clone https://github.com/kijai/ComfyUI-KJNodes.git /comfyui/custom_nodes
     && cd /comfyui/custom_nodes/ComfyUI-KJNodes \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install ComfyUI-WanVideoWrapper
-RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper.git /comfyui/custom_nodes/ComfyUI-WanVideoWrapper \
-    && cd /comfyui/custom_nodes/ComfyUI-WanVideoWrapper \
+# Install ComfyUI-VideoHelperSuite
+RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git /comfyui/custom_nodes/ComfyUI-VideoHelperSuite \
+    && cd /comfyui/custom_nodes/ComfyUI-VideoHelperSuite \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install ComfyUI-Custom-Scripts
-RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git /comfyui/custom_nodes/ComfyUI-Custom-Scripts \
-    && cd /comfyui/custom_nodes/ComfyUI-Custom-Scripts \
+# Install rgthree-comfy
+RUN git clone https://github.com/rgthree/rgthree-comfy.git /comfyui/custom_nodes/rgthree-comfy \
+    && cd /comfyui/custom_nodes/rgthree-comfy \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
 # Install ComfyUI-Easy-Use
@@ -133,13 +133,6 @@ RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git /comfyui/custom_nod
     && cd /comfyui/custom_nodes/ComfyUI-Easy-Use \
     && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
 
-# Install ComfyUI-Frame-Interpolation
-RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /comfyui/custom_nodes/ComfyUI-Frame-Interpolation \
-    && cd /comfyui/custom_nodes/ComfyUI-Frame-Interpolation \
-    && if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi \
-    && mkdir -p /comfyui/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife \
-    && wget -O /comfyui/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth \
-        https://huggingface.co/wavespeed/misc/resolve/main/rife/rife47.pth
 
 
 
@@ -147,9 +140,18 @@ RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git /com
 # (comfy_aimdo etc. are exposed via PYTHONPATH above)
 RUN uv pip install --no-cache-dir -r /comfyui/requirements.txt
 
+# Missing deps for custom nodes
+# ComfyUI-Easy-Use needs opencv, ComfyUI-WanVideoWrapper needs accelerate
+RUN uv pip install --no-cache-dir opencv-python-headless accelerate
+
 # alembic is required by ComfyUI's new SQLite database layer but is not listed
 # in its requirements.txt, so install it explicitly
 RUN uv pip install --no-cache-dir alembic
+
+# comfy_aimdo - try installing as a pip package in case it is not bundled inside
+# the /comfyui directory. || true so the build doesn't fail if it's not on PyPI
+# (PYTHONPATH="/comfyui" covers it if it's a folder inside the ComfyUI source)
+RUN uv pip install --no-cache-dir comfy-aimdo || true
 
 # Install Python runtime dependencies for the handler
 RUN uv pip install runpod requests websocket-client

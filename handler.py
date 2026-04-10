@@ -17,7 +17,9 @@ import traceback
 # Time to wait between API check attempts in milliseconds
 COMFY_API_AVAILABLE_INTERVAL_MS = 50
 # Maximum number of API check attempts
-COMFY_API_AVAILABLE_MAX_RETRIES = 500
+# ComfyUI can take 60+ seconds to start on first load (DB migrations, model scans)
+# 1200 retries × 50ms = 60 seconds max wait
+COMFY_API_AVAILABLE_MAX_RETRIES = 1200
 # Websocket reconnection behaviour (can be overridden through environment variables)
 # NOTE: more attempts and diagnostics improve debuggability whenever ComfyUI crashes mid-job.
 #   • WEBSOCKET_RECONNECT_ATTEMPTS sets how many times we will try to reconnect.
